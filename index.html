@@ -37,12 +37,43 @@ filter:saturate(.78) brightness(1.03)}
  background:transparent;border:0;cursor:pointer;
  transition:none;
 }
-.stone-hotspot:after{
- content:"";position:absolute;inset:-8px;border-radius:inherit;
- border:1px solid transparent;transition:.35s;
+.stone-hotspot::after {
+
+  content: "";
+
+  position: absolute;
+
+  inset: -8px;
+
+  border-radius: 50%;
+
+  border: 1px solid transparent;
+
+  pointer-events: none;
+
 }
-.stone-hotspot:hover,.stone-hotspot.active{filter:none;box-shadow:none}
-.stone-hotspot:hover:after,.stone-hotspot.active:after{border-color:transparent;box-shadow:none}
+
+.stone-hotspot:hover,
+
+.stone-hotspot.active {
+
+  filter: none;
+
+  transform: none;
+
+  box-shadow: none;
+
+}
+
+.stone-hotspot:hover::after,
+
+.stone-hotspot.active::after {
+
+  border-color: transparent;
+
+  box-shadow: none;
+
+}
 .stone-number{
  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(.8);
  opacity:0;color:white;font-size:18px;letter-spacing:.08em;
