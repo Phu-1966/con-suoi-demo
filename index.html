@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Con Suối — Khu Vườn Tâm Thức</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;background:#eef0e8;color:#173b36;font-family:Georgia,"Times New Roman",serif}
+body{overflow-x:hidden}
+
+/* MẶT SUỐI */
+.hero{height:100vh;min-height:620px;position:relative;overflow:hidden;background:#1e3934}
+.hero video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(.88) brightness(.84)}
+.hero:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,30,27,.10),rgba(8,30,27,.04) 48%,rgba(8,30,27,.30))}
+.hero-copy{position:absolute;z-index:2;left:50%;top:31%;transform:translate(-50%,-50%);width:min(900px,90vw);text-align:center;color:white;text-shadow:0 2px 18px rgba(0,0,0,.30)}
+.hero-title{font-size:clamp(38px,6vw,72px);letter-spacing:.18em;font-weight:500}
+.hero-sub{margin-top:10px;font-size:clamp(15px,2vw,22px);letter-spacing:.16em;opacity:.88}
+.hero-line{width:70px;height:1px;background:rgba(255,255,255,.48);margin:25px auto}
+.hero-slogan{font-size:clamp(19px,2.5vw,30px);line-height:1.5;opacity:.82;letter-spacing:.015em}
+
+/* DÒNG ĐÁ */
+.books{position:relative;min-height:900px;padding:92px 5vw 130px;overflow:hidden;background:#dce4dc}
+.books:before{content:"";position:absolute;inset:0;background:
+linear-gradient(rgba(223,232,225,.30),rgba(204,219,211,.20)),
+url("da-cuoi.jpg") center/cover no-repeat;
+filter:saturate(.78) brightness(1.03)}
+.books:after{content:"";position:absolute;inset:0;background:rgba(223,232,225,.25)}
+.books-inner{position:relative;z-index:2;max-width:1180px;margin:auto}
+.touch-line{text-align:center;color:rgba(30,65,58,.70);font-size:clamp(18px,2.2vw,25px);font-style:italic;margin-bottom:55px}
+.stream-map{position:relative;height:650px;max-width:1120px;margin:auto}
+
+/* Các điểm chạm được đặt theo những vùng đá tự nhiên trong ảnh.
+   Chưa hiển thị tên/số khi chưa chạm. */
+.stone-hotspot{
+ position:absolute;width:120px;height:82px;border-radius:55% 45% 48% 52%;
+ background:transparent;border:0;cursor:pointer;
+ transition:none;
+}
+.stone-hotspot:after{
+ content:"";position:absolute;inset:-8px;border-radius:inherit;
+ border:1px solid transparent;transition:.35s;
+}
+.stone-hotspot:hover,.stone-hotspot.active{filter:none;box-shadow:none}
+.stone-hotspot:hover:after,.stone-hotspot.active:after{border-color:transparent;box-shadow:none}
+.stone-number{
+ position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(.8);
+ opacity:0;color:white;font-size:18px;letter-spacing:.08em;
+ text-shadow:0 1px 8px rgba(0,0,0,.65);
+ transition:.35s;pointer-events:none
+}
+.stone-hotspot.active .stone-number{opacity:.96;transform:translate(-50%,-50%) scale(1)}
+
+.h1{left:7%;top:16%;transform:rotate(-7deg)}
+.h2{left:27%;top:8%;transform:rotate(4deg)}
+.h3{left:51%;top:15%;transform:rotate(-3deg)}
+.h4{left:76%;top:10%;transform:rotate(6deg)}
+.h5{left:14%;top:39%;transform:rotate(5deg)}
+.h6{left:38%;top:43%;transform:rotate(-6deg)}
+.h7{left:63%;top:38%;transform:rotate(4deg)}
+.h8{left:84%;top:45%;transform:rotate(-5deg)}
+.h9{left:28%;top:68%;transform:rotate(5deg)}
+.h10{left:58%;top:72%;transform:rotate(-4deg)}
+
+.water-ripple{
+ position:fixed;pointer-events:none;z-index:50;
+ width:18px;height:18px;border-radius:50%;
+ transform:translate(-50%,-50%);
+}
+.water-ripple span{
+ position:absolute;left:50%;top:50%;
+ width:24px;height:24px;border-radius:50%;
+ border:1.5px solid rgba(218,248,242,.86);
+ transform:translate(-50%,-50%) scale(.2);
+ opacity:0;
+ box-shadow:0 0 5px rgba(211,247,240,.18);
+ animation:waterSpread 1.65s cubic-bezier(.12,.48,.18,1) forwards;
+}
+.water-ripple span:nth-child(2){animation-delay:.12s}
+.water-ripple span:nth-child(3){animation-delay:.24s}
+.water-ripple span:nth-child(4){animation-delay:.36s}
+@keyframes waterSpread{
+ 0%{transform:translate(-50%,-50%) scale(.2);opacity:0}
+ 9%{opacity:.78}
+ 70%{opacity:.40}
+ 100%{transform:translate(-50%,-50%) scale(31);opacity:0}
+}
+.book-panel{
+ position:fixed;inset:0;z-index:40;background:rgba(245,244,235,.97);
+ display:none;align-items:center;justify-content:center;padding:30px
+}
+.book-panel.open{display:flex}
+.panel-card{max-width:520px;text-align:center}
+.panel-card h2{font-size:34px;font-weight:400;letter-spacing:.06em;margin:0 0 10px}
+.panel-card p{color:#63756e;margin:0 0 28px}
+.panel-card button{border:1px solid #b9c4b8;background:#fffdf6;border-radius:30px;padding:11px 22px;font:inherit;color:#35574f;cursor:pointer}
+.close{position:absolute;right:24px;top:20px;border:0;background:none;font-size:28px;color:#536b63;cursor:pointer}
+
+@media(max-width:700px){
+ .hero{min-height:540px}
+ .hero-copy{top:29%}
+ .books{padding-left:18px;padding-right:18px}
+ .stream-map{height:560px}
+ .stone-hotspot{width:92px;height:62px}
+ .h1{left:3%}.h2{left:23%}.h3{left:48%}.h4{left:74%}
+ .h5{left:8%}.h6{left:35%}.h7{left:60%}.h8{left:79%}
+ .h9{left:23%}.h10{left:54%}
+}
+</style>
+</head>
+<body>
+
+<section class="hero">
+  <video autoplay muted loop playsinline preload="metadata" src="293801.mp4"></video>
+  <div class="hero-copy">
+    <div class="hero-title">CON SUỐI</div>
+    <div class="hero-sub">SUỐI NGUỒN KINH ĐIỂN</div>
+    <div class="hero-line"></div>
+    <div class="hero-slogan">Mỗi cuốn sách là một viên đá bên dòng suối.</div>
+  </div>
+</section>
+
+<section class="books">
+  <div class="books-inner">
+    <div class="touch-line">Chạm vào một viên đá, mặt nước lại kể một câu chuyện.</div>
+    <div class="stream-map">
+      <button class="stone-hotspot h1" data-book="01 · Ếch con ngây thơ"><span class="stone-number">01</span></button>
+      <button class="stone-hotspot h2" data-book="02 · Con Cò"><span class="stone-number">02</span></button>
+      <button class="stone-hotspot h3" data-book="03 · Dòng sông không bờ"><span class="stone-number">03</span></button>
+      <button class="stone-hotspot h4" data-book="04 · Cái Ao làng"><span class="stone-number">04</span></button>
+      <button class="stone-hotspot h5" data-book="05 · Khu vườn trước sân"><span class="stone-number">05</span></button>
+      <button class="stone-hotspot h6" data-book="06 · Căn nhà mái lá"><span class="stone-number">06</span></button>
+      <button class="stone-hotspot h7" data-book="07 · Dòng chảy vô tận"><span class="stone-number">07</span></button>
+      <button class="stone-hotspot h8" data-book="08 · Về nơi rỗng rang"><span class="stone-number">08</span></button>
+      <button class="stone-hotspot h9" data-book="09 · Dòng chảy tự nhiên"><span class="stone-number">09</span></button>
+      <button class="stone-hotspot h10" data-book="10 · Năm cánh hoa"><span class="stone-number">10</span></button>
+    </div>
+  </div>
+</section>
+
+<div class="book-panel" id="panel">
+  <button class="close" onclick="closePanel()">×</button>
+  <div class="panel-card">
+    <h2 id="bookTitle"></h2>
+    <p>Viên đá đã kể câu chuyện của mình.</p>
+    <button onclick="closePanel()">Mở sách</button>
+  </div>
+</div>
+
+<script>
+const panel=document.getElementById('panel');
+const title=document.getElementById('bookTitle');
+
+document.querySelectorAll('.stone-hotspot').forEach((stone)=>{
+  stone.addEventListener('click',(e)=>{
+    document.querySelectorAll('.stone-hotspot').forEach(x=>x.classList.remove('active'));
+    stone.classList.add('active');
+
+    const r=document.createElement('div');
+    r.className='water-ripple';
+    r.style.left=e.clientX+'px';
+    r.style.top=e.clientY+'px';
+    for(let i=0;i<4;i++){r.appendChild(document.createElement('span'))}
+    document.body.appendChild(r);
+    setTimeout(()=>r.remove(),1800);
+
+    title.textContent=stone.dataset.book;
+    setTimeout(()=>panel.classList.add('open'),850);
+  });
+});
+function closePanel(){
+  panel.classList.remove('open');
+  document.querySelectorAll('.stone-hotspot').forEach(x=>x.classList.remove('active'));
+}
+</script>
+</body>
+</html>
