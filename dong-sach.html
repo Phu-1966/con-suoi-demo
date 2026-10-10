@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="vi">
+  <script src="https://unpkg.com/epubjs@0.3.93/dist/epub.min.js"></script>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -110,6 +111,121 @@ h1{margin:0;font-size:clamp(34px,8vw,54px);font-weight:400;letter-spacing:.12em}
 .panel-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}.panel-actions button{border:1px solid #c4d3cb;border-radius:999px;padding:11px 18px;background:#f8faf6;color:#39584e;font:14px system-ui,sans-serif;cursor:pointer}.panel-actions .primary{background:#dce9e1}
 .close{position:absolute;right:13px;top:12px;width:36px;height:36px;border:0;border-radius:50%;background:transparent;color:#597168;font-size:25px;cursor:pointer}
 @media(min-width:800px){.stream img{height:760px}}@media(prefers-reduced-motion:reduce){.pebble-number{transition:none}.ripple span{animation-duration:1ms}}
+  reader{
+
+  display:none;
+
+  position:fixed;
+
+  inset:0;
+
+  z-index:50;
+
+  background:#f7f4ea;
+
+}
+
+.reader.open{display:block}
+
+.readerbar{
+
+  height:64px;
+
+  display:flex;
+
+  align-items:center;
+
+  justify-content:space-between;
+
+  gap:8px;
+
+  padding:0 10px;
+
+  background:#fbfaf4;
+
+  border-bottom:1px solid #ddd8c7;
+
+}
+
+.reader-back,.reader-actions button{
+
+  border:1px solid #cfcab9;
+
+  border-radius:22px;
+
+  padding:8px 12px;
+
+  background:#fffdf7;
+
+  color:#53664b;
+
+  font:14px system-ui,sans-serif;
+
+}
+
+.reader-title{
+
+  flex:1;
+
+  min-width:0;
+
+  text-align:center;
+
+  font-size:13px;
+
+  overflow:hidden;
+
+  text-overflow:ellipsis;
+
+  white-space:nowrap;
+
+}
+
+.reader-actions{display:flex;gap:5px}
+
+#readerViewer{
+
+  position:absolute;
+
+  top:64px;
+
+  left:0;
+
+  right:0;
+
+  bottom:0;
+
+  overflow:hidden;
+
+}
+
+#readerLoading{
+
+  position:absolute;
+
+  top:64px;
+
+  left:0;
+
+  right:0;
+
+  bottom:0;
+
+  display:flex;
+
+  align-items:center;
+
+  justify-content:center;
+
+  background:#f7f4ea;
+
+  color:#697161;
+
+  pointer-events:none;
+
+}
+
+#readerLoading.hide{display:none}
 </style>
 </head>
 <body>
@@ -134,6 +250,29 @@ h1{margin:0;font-size:clamp(34px,8vw,54px);font-weight:400;letter-spacing:.12em}
 <button class="close" id="closePanel" aria-label="Đóng">×</button><p class="panel-kicker">Một viên đá đã kể chuyện</p><h2 id="panelTitle"></h2><p id="panelText">Cuốn sách đang chờ được nối vào dòng suối.</p>
 <div class="panel-actions"><button id="readBook" class="primary">Mở sách</button><button id="backToStream">Trở lại dòng suối</button></div>
 </div></div>
+  <section id="reader" class="reader" aria-label="Trình đọc sách">
+
+  <div class="readerbar">
+
+    <button id="backToStreamReader" class="reader-back">← Trở lại Con Suối</button>
+
+    <span id="readerTitle" class="reader-title">Đang mở sách…</span>
+
+    <div class="reader-actions">
+
+      <button id="prevPage" aria-label="Trang trước">‹</button>
+
+      <button id="nextPage" aria-label="Trang sau">›</button>
+
+    </div>
+
+  </div>
+
+  <div id="readerViewer"></div>
+
+  <div id="readerLoading">Đang mở sách…</div>
+
+</section>
 <script>
 (()=>{const stream=document.getElementById('stream'),panel=document.getElementById('bookPanel'),title=document.getElementById('panelTitle'),read=document.getElementById('readBook');
 function closePanel(){panel.classList.remove('open')}
@@ -152,23 +291,149 @@ const epubFiles = {
 
 };
 
-read.onclick = () => {
+let activeBook = null;
 
-  const file = epubFiles[pebble.dataset.book];
+let rendition = null;
 
-  if (file) {
+let openingBook = false;
 
-    window.location.href = file;
+const reader = document.getElementById("reader");
 
-  } else {
+const readerViewer = document.getElementById("readerViewer");
 
-    document.getElementById('panelText').textContent =
+const readerLoading = document.getElementById("readerLoading");
 
-      'Cuốn sách này chưa có tệp EPUB.';
+const readerTitle = document.getElementById("readerTitle");
+
+read.onclick = async () => {
+
+  const file = epubFiles[title.textContent];
+
+  if (!file) {
+
+    document.getElementById("panelText").textContent =
+
+      "Cuốn sách này chưa có tệp EPUB.";
+
+    return;
+
+  }
+
+  if (typeof ePub !== "function") {
+
+    document.getElementById("panelText").textContent =
+
+      "Chưa tải được thư viện đọc sách. Bạn hãy tải lại trang.";
+
+    return;
+
+  }
+
+  if (openingBook) return;
+
+  openingBook = true;
+
+  reader.classList.add("open");
+
+  readerLoading.classList.remove("hide");
+
+  readerLoading.textContent = "Đang mở sách…";
+
+  readerTitle.textContent = title.textContent;
+
+  try {
+
+    if (activeBook) {
+
+      activeBook.destroy();
+
+      activeBook = null;
+
+      rendition = null;
+
+    }
+
+    readerViewer.replaceChildren();
+
+    activeBook = ePub(file);
+
+    rendition = activeBook.renderTo(readerViewer, {
+
+      width: "100%",
+
+      height: "100%",
+
+      spread: "none",
+
+      flow: "paginated"
+
+    });
+
+    rendition.themes.default({
+
+      body: {
+
+        background: "#f7f4ea !important",
+
+        color: "#253525 !important"
+
+      },
+
+      p: { lineHeight: "1.8" },
+
+      img: { maxWidth: "100%", height: "auto" }
+
+    });
+
+    await rendition.display();
+
+    readerLoading.classList.add("hide");
+
+    closePanel();
+
+  } catch (error) {
+
+    console.error(error);
+
+    readerLoading.textContent =
+
+      "Chưa mở được sách. Bạn hãy thử lại.";
+
+  } finally {
+
+    openingBook = false;
 
   }
 
 };
+
+document.getElementById("prevPage").onclick = () => {
+
+  if (rendition) rendition.prev();
+
+};
+
+document.getElementById("nextPage").onclick = () => {
+
+  if (rendition) rendition.next();
+
+};
+
+document.getElementById("backToStreamReader").onclick = () => {
+
+  reader.classList.remove("open");
+
+};
+
+window.addEventListener("resize", () => {
+
+  if (rendition && reader.classList.contains("open")) {
+
+    rendition.resize();
+
+  }
+
+});
 setTimeout(()=>panel.classList.add('open'),650);
 }));})();
 </script>
