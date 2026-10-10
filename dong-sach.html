@@ -385,7 +385,23 @@ read.onclick = async () => {
 
     });
 
-    await rendition.display();
+    await Promise.race([
+
+  rendition.display(),
+
+  new Promise((_, reject) =>
+
+    setTimeout(
+
+      () => reject(new Error("Quá thời gian mở sách")),
+
+      15000
+
+    )
+
+  )
+
+]);
 
     readerLoading.classList.add("hide");
 
