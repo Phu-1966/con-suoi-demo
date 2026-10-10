@@ -144,7 +144,31 @@ stream.querySelectorAll('.pebble').forEach(p=>p.classList.remove('selected'));pe
 const rect=stream.getBoundingClientRect(),ripple=document.createElement('div');ripple.className='ripple';ripple.style.left=(event.clientX-rect.left)+'px';ripple.style.top=(event.clientY-rect.top)+'px';
 for(let i=0;i<3;i++)ripple.appendChild(document.createElement('span'));stream.appendChild(ripple);setTimeout(()=>ripple.remove(),2300);
 title.textContent=pebble.dataset.book;document.getElementById('panelText').textContent='Tên sách đã được chọn. Ta sẽ nối tệp EPUB thật ở bước tiếp theo.';
-read.onclick=()=>{document.getElementById('panelText').textContent='Cuốn sách này chưa được nối với tệp EPUB.'};
+const epubFiles = {
+
+  "Ếch con ngây thơ": "Ech_con_ngay_tho_.epub",
+
+  "Con Cò": "Con_co.epub"
+
+};
+
+read.onclick = () => {
+
+  const file = epubFiles[pebble.dataset.book];
+
+  if (file) {
+
+    window.location.href = file;
+
+  } else {
+
+    document.getElementById('panelText').textContent =
+
+      'Cuốn sách này chưa có tệp EPUB.';
+
+  }
+
+};
 setTimeout(()=>panel.classList.add('open'),650);
 }));})();
 </script>
