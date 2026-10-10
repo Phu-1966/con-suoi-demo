@@ -357,17 +357,25 @@ read.onclick = async () => {
 
     activeBook = ePub(file);
 
-    rendition = activeBook.renderTo(readerViewer, {
+rendition = activeBook.renderTo("readerViewer", {
 
-      width: "100%",
+  width: readerViewer.clientWidth,
 
-      height: "100%",
+  height: readerViewer.clientHeight,
 
-      spread: "none",
+  layout: "reflowable",
 
-      flow: "paginated"
+  flow: "paginated",
 
-    });
+  spread: "none",
+
+  gap: 0,
+
+  manager: "default"
+
+});
+
+rendition.spread("none");
 
     rendition.themes.default({
 
