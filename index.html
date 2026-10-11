@@ -16,7 +16,7 @@ body{overflow-x:hidden}
 
   min-height:0;
 
-  padding:24px 0 40px;
+  padding:42px 0 40px;
 
   background:#f4ecd8;
 
@@ -166,13 +166,60 @@ filter:saturate(.78) brightness(1.03)}
  .h5{left:8%}.h6{left:35%}.h7{left:60%}.h8{left:79%}
  .h9{left:23%}.h10{left:54%}
 }
+  .site-header{
+
+  display:flex;
+
+  align-items:baseline;
+
+  justify-content:space-between;
+
+  gap:12px;
+
+  padding:32px 5% 18px;
+
+  background:#faf6eb;
+
+  color:#293725;
+
+}
+
+.site-name{
+
+  font-size:clamp(25px,5vw,38px);
+
+  letter-spacing:.16em;
+
+  white-space:nowrap;
+
+}
+
+.site-tagline{
+
+  font-size:clamp(11px,2.5vw,16px);
+
+  letter-spacing:.12em;
+
+  color:#806b48;
+
+  text-align:right;
+
+}
 </style>
 </head>
 <body>
 
+<header class="site-header">
+
+  <div class="site-name">CON SUỐI</div>
+
+  <div class="site-tagline">Suối nguồn kinh điển</div>
+
+</header>
+
 <section class="hero">
 
- <video autoplay muted loop playsinline preload="metadata" src="con-suoi-clean.mov"></video> 
+  <video autoplay muted loop playsinline preload="metadata" src="con-suoi-clean.mov"></video>
 
 </section>
 
