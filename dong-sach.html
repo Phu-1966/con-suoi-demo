@@ -524,29 +524,7 @@ document.getElementById("nextPage").onclick = () => {
   if (rendition) rendition.next();
 
 };
-document.getElementById("back10Pages").onclick = async () => {
 
-  if (!rendition) return;
-
-  for (let i = 0; i < 10; i++) {
-
-    await rendition.prev();
-
-  }
-
-};
-
-document.getElementById("next10Pages").onclick = async () => {
-
-  if (!rendition) return;
-
-  for (let i = 0; i < 10; i++) {
-
-    await rendition.next();
-
-  }
-
-};
 document.getElementById("backToStreamReader").onclick = () => {
 
   reader.classList.remove("open");
