@@ -458,6 +458,21 @@ rendition = activeBook.renderTo("readerViewer", {
 });
 
 rendition.spread("none");
+    let currentPage = 1;
+let totalPages = 0;
+
+rendition.on(“relocated”, function(location) {
+const page = location.start.displayed.page;
+const total = location.start.displayed.total;
+
+if (page) currentPage = page;
+if (total) totalPages = total;
+
+document.getElementById(“location”).textContent =
+totalPages
+? Trang ${currentPage} / ${totalPages}
+: Trang ${currentPage};
+});
 
     rendition.themes.default({
 
