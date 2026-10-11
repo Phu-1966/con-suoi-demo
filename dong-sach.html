@@ -492,7 +492,13 @@ rendition.spread("none");
   )
 
 ]);
-
+rendition.on(“relocated”, function(location) {
+const page = location.start.displayed.page;
+if (page) {
+document.getElementById(“location”).textContent =
+“Trang “ + page;
+}
+});
     readerLoading.classList.add("hide");
 
     closePanel();
