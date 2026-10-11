@@ -458,20 +458,7 @@ rendition = activeBook.renderTo("readerViewer", {
 });
 
 rendition.spread("none");
-  rendition.on(“relocated”, function(location) {
-const current = location && location.start
-? location.start.displayed.page
-: 1;
-
-const total = location && location.start
-? location.start.displayed.total
-: 0;
-
-document.getElementById(“location”).textContent =
-total > 0
-? Trang ${current} / ${total}
-: Trang ${current};
-});  
+  
     rendition.themes.default({
 
       body: {
