@@ -164,6 +164,7 @@ body{overflow-x:hidden}
   const panelText = document.getElementById('ds-panelText');
   const readButton = document.getElementById('ds-readBook');
   const reader = document.getElementById('ds-reader');
+   const homeButton = document.getElementById('ds-homeButton');
   const readerViewer = document.getElementById('ds-readerViewer');
   const readerLoading = document.getElementById('ds-readerLoading');
   const readerTitle = document.getElementById('ds-readerTitle');
@@ -254,7 +255,9 @@ body{overflow-x:hidden}
     }
 
     openingBook = true;
-    reader.classList.add('open');
+    homeButton.style.display = 'none';
+
+reader.classList.add('open');
     readerLoading.classList.remove('hide');
     readerLoading.textContent = 'Đang mở sách…';
     readerTitle.textContent = selectedBook;
@@ -339,7 +342,13 @@ p: {
 
   document.getElementById('ds-prevPage').addEventListener('click', () => { if (rendition) rendition.prev(); });
   document.getElementById('ds-nextPage').addEventListener('click', () => { if (rendition) rendition.next(); });
-  document.getElementById('ds-backToStreamReader').addEventListener('click', () => reader.classList.remove('open'));
+  document.getElementById('ds-backToStreamReader').addEventListener('click', () => {
+
+  reader.classList.remove('open');
+homeButton.style.display = '';
+  homeButton.style.display = '';
+
+});
 
   document.getElementById('ds-footerBack10').addEventListener('click', async () => {
     if (!rendition) return;
