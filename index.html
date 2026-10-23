@@ -58,19 +58,39 @@ body{overflow-x:hidden}
 .ds-readerbar{height:64px;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:0 10px;background:#fbfaf4;border-bottom:1px solid #ddd8c7}
 .ds-reader-back,.ds-reader-actions button{border:1px solid #cfcab9;border-radius:22px;padding:8px 12px;background:#fffdf7;color:#53664b;font:14px system-ui,sans-serif;cursor:pointer;white-space:nowrap}
 .ds-reader-title{flex:1;min-width:0;text-align:center;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.ds-reader-actions{display:flex;gap:12px;align-items:center}
+.ds-reader-actions{display:flex;gap:5px}
 #ds-readerViewer{position:absolute;top:64px;left:0;right:0;bottom:64px;overflow:hidden}
 #ds-readerLoading{position:absolute;top:64px;left:0;right:0;bottom:64px;display:flex;align-items:center;justify-content:center;background:#f7f4ea;color:#697161;pointer-events:none}
 #ds-readerLoading.hide{display:none}
-.ds-reader-footer{position:absolute;left:0;right:0;bottom:0;height:64px;display:flex;align-items:center;justify-content:center;gap:24px;padding:0 14px;background:#fbfaf4;border-top:1px solid #ddd8c7;z-index:10}
+.ds-reader-footer{position:absolute;left:0;right:0;bottom:0;height:64px;display:flex;align-items:center;justify-content:center;gap:18px;padding:0 14px;background:#fbfaf4;border-top:1px solid #ddd8c7;z-index:10}
 .ds-reader-footer button{border:1px solid #cfcab9;border-radius:22px;padding:8px 16px;background:#fffdf7;color:#53664b;font:14px system-ui,sans-serif;cursor:pointer}
 #ds-location{min-width:100px;text-align:center;color:#697161;font:14px system-ui,sans-serif}
 @media(min-width:800px){.ds-stream img{height:760px}}
-@media(max-width:600px){.site-header{padding:24px 5% 15px}.hero{padding:24px 0 28px}.ds-readerbar{gap:4px;padding:0 5px}.ds-reader-back{font-size:12px;padding:7px 5px}.ds-reader-title{font-size:12px}.ds-reader-actions button{padding:7px 9px}.ds-reader-actions{gap:10px}.ds-reader-footer{gap:18px}}
+@media(max-width:600px){.site-header{padding:24px 5% 15px}.hero{padding:24px 0 28px}.ds-readerbar{gap:4px;padding:0 5px}.ds-reader-back{font-size:12px;padding:7px 5px}.ds-reader-title{font-size:12px}.ds-reader-actions button{padding:7px 9px}.ds-reader-footer{gap:12px}}
 @media(prefers-reduced-motion:reduce){.ds-pebble-number{transition:none}.ds-ripple span{animation-duration:1ms}}
 </style>
 </head>
 <body>
+
+<a href="https://phu-1966.github.io/khu-vuon-tam-thuc-v2/"
+
+   aria-label="Về trang chủ Khu Vườn Tâm Thức"
+
+   style="position:fixed;top:52px;left:12px;z-index:9999;
+
+   padding:10px 14px;border-radius:24px;
+
+   background:rgba(248,240,226,.94);color:#61472f;
+
+   border:1px solid rgba(97,71,47,.25);
+
+   text-decoration:none;font:600 13px/1.2 system-ui,sans-serif;
+
+   box-shadow:0 2px 10px rgba(40,25,12,.16)">
+
+  🏡 Về trang chủ
+
+</a>
 <header class="site-header">
   <div class="site-name">CON SUỐI</div>
   <div class="site-tagline">Suối nguồn kinh điển</div>
@@ -152,7 +172,7 @@ body{overflow-x:hidden}
   const epubFiles = {
     "Ếch con ngây thơ": "Ech_con_ngay_tho_Muc_luc_sua_V1.epub",
     "Con Cò": "Con_Co_V16_LE_TRAI_MUC_MOI_KHOANG_LANG.epub",
-    "Dòng sông không bờ": "Dong_Song_Khong_Bo_V6_BIA_TRUOC_SAU.epub"
+     "Dòng sông không bờ": "Dong_Song_Khong_Bo_V6_BIA_TRUOC_SAU.epub"
   };
 
   let selectedBook = "";
@@ -218,32 +238,9 @@ body{overflow-x:hidden}
     if (!rendition) return;
     const current = rendition.currentLocation();
     if (!current || !current.start) return;
-
-    // Ưu tiên bản đồ vị trí toàn sách khi đã tạo xong.
-    // Chỉ dùng kết quả hợp lệ; một số bản EPUB/Safari trả về tổng bất thường.
-    if (activeBook && activeBook.locations && typeof activeBook.locations.length === 'function') {
-      const total = Number(activeBook.locations.length());
-      const cfi = current.start.cfi;
-      const position = cfi && total > 0
-        ? Number(activeBook.locations.locationFromCfi(cfi))
-        : -1;
-      if (Number.isFinite(position) && position >= 0 &&
-          Number.isFinite(total) && total > 0 && total < 10000) {
-        locationLabel.textContent = `Vị trí ${position + 1}/${total}`;
-        return;
-      }
-    }
-
     const displayed = current.start.displayed;
-    const page = Number(displayed && displayed.page);
-    const total = Number(displayed && displayed.total);
-    if (Number.isFinite(page) && page > 0 &&
-        Number.isFinite(total) && total > 0 && total < 10000) {
-      locationLabel.textContent = `Trang ${page}/${total}`;
-    } else if (Number.isFinite(page) && page > 0) {
-      locationLabel.textContent = `Trang ${page}`;
-    } else {
-      locationLabel.textContent = 'Đang xác định trang…';
+    if (displayed && displayed.page && displayed.total) {
+      locationLabel.textContent = `Mục hiện tại: ${displayed.page}/${displayed.total}`;
     }
   }
 
@@ -269,7 +266,6 @@ body{overflow-x:hidden}
       }
       readerViewer.replaceChildren();
       activeBook = ePub(file);
-      await activeBook.ready;
       rendition = activeBook.renderTo('ds-readerViewer', {
         width: readerViewer.clientWidth,
         height: readerViewer.clientHeight,
@@ -280,49 +276,13 @@ body{overflow-x:hidden}
         manager: 'default'
       });
       rendition.spread('none');
-      const conCoTheme = selectedBook === 'Con Cò';
       rendition.themes.default({
-        body: {
-          background: '#f7f4ea !important',
-          color: '#253525 !important',
-          margin: '0 !important',
-          padding: conCoTheme ? '0 4% 0 8% !important' : '0 18px 0 28px !important',
-          width: conCoTheme ? '88% !important' : '100% !important',
-          'box-sizing': 'border-box !important'
-        },
+        body: { background: '#f7f4ea !important', color: '#253525 !important', padding: '0 14px 0 24px !important', boxSizing: 'border-box !important' },
         p: { lineHeight: '1.8' },
-        h1: conCoTheme ? { 'max-width': '100% !important', 'overflow-wrap': 'break-word !important', 'word-wrap': 'break-word !important', 'white-space': 'normal !important' } : {},
-        img: { maxWidth: '100%', height: 'auto' },
-        // Con Cò: mỗi chương/phần/ảnh đã là một mục riêng trong spine EPUB.
-        // Không ép ngắt trang lần nữa ở đầu mục, tránh sinh trang trắng.
-        '.chapter': conCoTheme ? {
-          'break-before': 'auto !important',
-          'page-break-before': 'auto !important'
-        } : {},
-        '.subhead': conCoTheme ? {
-          'break-before': 'auto !important',
-          'page-break-before': 'auto !important'
-        } : {},
-        '.chapter h1': conCoTheme ? {
-          'max-width': '100% !important',
-          'overflow-wrap': 'break-word !important',
-          'word-wrap': 'break-word !important',
-          'white-space': 'normal !important',
-          'min-height': '68vh !important',
-          'break-after': 'page !important',
-          'page-break-after': 'always !important'
-        } : {},
-        '.cover-page, .title-page, .part-page, .art-page, .ending-page, .author-page, .back-page': conCoTheme ? {
-          'break-before': 'auto !important',
-          'page-break-before': 'auto !important'
-        } : {},
-        '.art-page img, .part-art, .back-cover-img': conCoTheme ? {
-          'max-width': '100% !important',
-          'max-height': '90vh !important',
-          'object-fit': 'contain !important'
-        } : {}
+        img: { maxWidth: '100%', height: 'auto' }
       });
       rendition.on('relocated', updateLocation);
+
       await Promise.race([
         rendition.display(),
         new Promise((_, reject) => window.setTimeout(() => reject(new Error('Quá thời gian mở sách')), 15000))
@@ -331,17 +291,6 @@ body{overflow-x:hidden}
       readerLoading.classList.add('hide');
       closePanel();
       updateLocation();
-
-      // Build the long-book location map only after the first page is visible.
-      // This avoids delaying the initial render on mobile Safari.
-      if (selectedBook === 'Con Cò' || selectedBook === 'Dòng sông không bờ') {
-        // Không chặn lần mở đầu tiên; tạo bản đồ sau khi trang đầu đã hiện.
-        activeBook.locations.generate(1600).then(() => {
-          updateLocation();
-        }).catch(error => {
-          console.warn('Không tạo được bản đồ vị trí EPUB:', error);
-        });
-      }
     } catch (error) {
       console.error(error);
       readerLoading.textContent = 'Chưa mở được sách. Hãy kiểm tra tệp EPUB trong GitHub rồi thử lại.';
@@ -370,3 +319,4 @@ body{overflow-x:hidden}
 </script>
 </body>
 </html>
+
