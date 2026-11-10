@@ -255,6 +255,7 @@ let totalBookPages = 0;
 
   
 
+
 function updateLocation(loc) {
 
   if (!rendition) return;
@@ -267,8 +268,6 @@ function updateLocation(loc) {
 
   const localPage = loc.start.displayed?.page || 1;
 
-  // Khi chưa đo xong, chỉ hiển thị trang trong mục hiện tại.
-
   if (!totalBookPages || !sectionPageCounts.length) {
 
     locationLabel.textContent = `Trang ${localPage}`;
@@ -276,8 +275,22 @@ function updateLocation(loc) {
     return;
 
   }
-   
 
+  const previousPages = sectionPageCounts
+
+    .slice(0, sectionIndex)
+
+    .reduce((sum, pages) => sum + pages, 0);
+
+  const currentPage = previousPages + localPage;
+
+  locationLabel.textContent =
+
+    `Trang ${currentPage}/${totalBookPages}`;
+
+}
+
+// Đo tổng số trang của toàn bộ cuốn sách
 
 async function measureWholeBook() {
 
@@ -335,8 +348,6 @@ async function measureWholeBook() {
 
     totalBookPages = 0;
 
-    // Đo lần lượt từng mục trong toàn bộ EPUB.
-
     for (let i = 0; i < items.length; i++) {
 
       await meter.display(items[i].href);
@@ -369,29 +380,11 @@ async function measureWholeBook() {
 
   }
 
-  // Trả trình đọc chính về trang đầu.
-
   await rendition.display();
 
   updateLocation();
 
 }
-  // Cộng số trang của tất cả các mục đứng trước.
-
-  const previousPages = sectionPageCounts
-
-    .slice(0, sectionIndex)
-
-    .reduce((sum, pages) => sum + pages, 0);
-
-  const currentPage = previousPages + localPage;
-
-  locationLabel.textContent =
-
-    `Trang ${currentPage}/${totalBookPages}`;
-
-}
-  }
 
   readButton.addEventListener('click', async () => {
     const file = epubFiles[selectedBook];
