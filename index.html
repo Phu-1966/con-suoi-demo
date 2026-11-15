@@ -269,6 +269,12 @@ let openingBook = false;
 
 let panelTimer = null;
 
+   // Cơ chế giữ trang đang đọc
+
+let currentStorageKey = null;
+
+let restoringReadingPosition = true;
+
 // Bộ đếm trang toàn bộ EPUB
 
 let sectionPageCounts = [];
@@ -368,6 +374,27 @@ function updateLocation(loc) {
 // Đo tổng số trang của toàn bộ cuốn sách
 
 async function measureWholeBook() {
+   // Khôi phục vị trí đọc đã lưu
+
+const savedCfi = localStorage.getItem(currentStorageKey);
+
+if (savedCfi && confirm(
+
+  'Bạn có muốn đọc tiếp từ vị trí đang đọc dở không?'
+
+)) {
+
+  await rendition.display(savedCfi);
+
+} else {
+
+  localStorage.removeItem(currentStorageKey);
+
+  await rendition.display();
+
+}
+
+restoringReadingPosition = false;
 
   const measure = document.createElement("div");
 
@@ -464,6 +491,11 @@ async function measureWholeBook() {
   readButton.addEventListener('click', async () => {
     const file = epubFiles[selectedBook];
     if (!file || openingBook) return;
+     currentStorageKey =
+
+  'con-suoi-reading-' + encodeURIComponent(selectedBook);
+
+restoringReadingPosition = true;
     if (typeof ePub !== 'function') {
       panelText.textContent = 'Chưa tải được thư viện đọc sách. Bạn hãy tải lại trang.';
       return;
@@ -537,7 +569,27 @@ p: {
         p: { lineHeight: '1.8' },
         img: { maxWidth: '100%', height: 'auto' }
       });
-      rendition.on('relocated', updateLocation);
+      rendition.on('relocated', loc => {
+
+  updateLocation(loc);
+
+  const cfi = loc && loc.start && loc.start.cfi;
+
+  if (cfi && currentStorageKey && !restoringReadingPosition) {
+
+    try {
+
+      localStorage.setItem(currentStorageKey, cfi);
+
+    } catch (error) {
+
+      console.warn('Không thể lưu vị trí đọc:', error);
+
+    }
+
+  }
+
+});
 
       await Promise.race([
 
