@@ -374,27 +374,6 @@ function updateLocation(loc) {
 // Đo tổng số trang của toàn bộ cuốn sách
 
 async function measureWholeBook() {
-   // Khôi phục vị trí đọc đã lưu
-
-const savedCfi = localStorage.getItem(currentStorageKey);
-
-if (savedCfi && confirm(
-
-  'Bạn có muốn đọc tiếp từ vị trí đang đọc dở không?'
-
-)) {
-
-  await rendition.display(savedCfi);
-
-} else {
-
-  localStorage.removeItem(currentStorageKey);
-
-  await rendition.display();
-
-}
-
-restoringReadingPosition = false;
 
   const measure = document.createElement("div");
 
