@@ -92,6 +92,35 @@ body{overflow-x:hidden}
   🏡 Về trang chủ
 
 </a>
+
+<button id="csAudioButton" type="button"
+
+  aria-label="Bật âm thanh Con Suối"
+
+  aria-pressed="false"
+
+  style="position:fixed;top:52px;right:12px;z-index:9999;
+
+  padding:10px 14px;border-radius:24px;
+
+  background:rgba(248,240,226,.94);color:#61472f;
+
+  border:1px solid rgba(97,71,47,.25);
+
+  font:600 13px/1.2 system-ui,sans-serif;
+
+  box-shadow:0 2px 10px rgba(40,25,12,.16);cursor:pointer;">
+
+  🔇 Âm thanh
+
+</button>
+
+<audio id="csAmbientAudio"
+
+  src="con-suoi-river-forest-birds.mp3"
+
+  loop preload="none"></audio>
+
 <header class="site-header">
   <div class="site-name">CON SUỐI</div>
   <div class="site-tagline">Suối nguồn kinh điển</div>
@@ -165,8 +194,47 @@ body{overflow-x:hidden}
   const panelText = document.getElementById('ds-panelText');
   const readButton = document.getElementById('ds-readBook');
   const reader = document.getElementById('ds-reader');
-   const homeButton = document.getElementById('ds-homeButton');
-  const readerViewer = document.getElementById('ds-readerViewer');
+   // Âm thanh nền Con Suối
+
+  const csAudio = document.getElementById('csAmbientAudio');
+
+  const csAudioButton = document.getElementById('csAudioButton');
+
+  csAudio.volume = 0.22;
+
+  csAudioButton.addEventListener('click', async () => {
+
+    if (csAudio.paused) {
+
+      try {
+
+        await csAudio.play();
+
+        csAudioButton.textContent = '🔊 Âm thanh';
+
+        csAudioButton.setAttribute('aria-pressed', 'true');
+
+        csAudioButton.setAttribute('aria-label', 'Tắt âm thanh Con Suối');
+
+      } catch (error) {
+
+        console.log('Không thể phát âm thanh:', error);
+
+      }
+
+    } else {
+
+      csAudio.pause();
+
+      csAudioButton.textContent = '🔇 Âm thanh';
+
+      csAudioButton.setAttribute('aria-pressed', 'false');
+
+      csAudioButton.setAttribute('aria-label', 'Bật âm thanh Con Suối');
+
+    }
+
+  });
   const readerLoading = document.getElementById('ds-readerLoading');
   const readerTitle = document.getElementById('ds-readerTitle');
   const locationLabel = document.getElementById('ds-location');
