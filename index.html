@@ -592,6 +592,46 @@ p: {
 
 await measureWholeBook();
 
+// Khôi phục vị trí đọc sau khi đã đo xong số trang
+
+let savedCfi = null;
+
+try {
+
+  savedCfi = localStorage.getItem(currentStorageKey);
+
+} catch (error) {
+
+  console.warn('Không thể đọc vị trí đã lưu:', error);
+
+}
+
+if (savedCfi && confirm(
+
+  'Bạn có muốn đọc tiếp từ vị trí đang đọc dở không?'
+
+)) {
+
+  await rendition.display(savedCfi);
+
+} else if (savedCfi) {
+
+  try {
+
+    localStorage.removeItem(currentStorageKey);
+
+  } catch (error) {
+
+    console.warn('Không thể xóa vị trí đã lưu:', error);
+
+  }
+
+  await rendition.display();
+
+}
+
+restoringReadingPosition = false;
+
 readerLoading.classList.add('hide');
 
 closePanel();
